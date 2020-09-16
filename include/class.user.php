@@ -28,6 +28,52 @@ else {
  }
 }
 
+/*** for login process ***/
+public function check_login($email, $password){
+    $conn = db();
+    $password = md5($password);
+    $sql="SELECT id from users WHERE email='$email' and upassword='$password'";
+    
+    //checking if the username is available in the table
+    $result    = $conn->query($sql);
+    $user_data = $result->fetch_assoc();
+    $count_row = $result->num_rows;
+    
+    if ($count_row == 1) {
+    // this login variable will use for the session thing
+    $_SESSION['login'] = true;
+    $_SESSION['uid'] = $user_data['id'];
+    return true;
+    }
+    else{
+    return false;
+    }
+    }
+    
+    /*** for showing the username or fullname ***/
+    public function get_fullname($uid)
+    {
+        $conn = db();
+        $sql="SELECT first_name,last_name FROM users WHERE id = $uid";
+        $result = $conn->query($sql);
+        $user_data = $result->fetch_assoc();
+        echo $user_data['first_name'];
+    }
+    
+    /*** starting the session ***/
+    public function get_session()
+    {
+        return $_SESSION['login'];
+    }
+
+    public function user_logout()
+    {
+        $_SESSION['login'] = FALSE;
+        session_destroy();
+    }
+
+    
+
 
 }
 
